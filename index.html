@@ -1,4 +1,4 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="ar" dir="rtl">
 <head>
   <meta charset="UTF-8">
@@ -8,7 +8,6 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;800&display=swap" rel="stylesheet">
   
-  <!-- مكتبة html2canvas لتحويل البطاقة إلى صورة -->
   <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
 
   <style>
@@ -118,6 +117,74 @@
       font-weight: 700;
     }
 
+    .photo-section {
+      margin: 22px 0;
+      padding: 15px;
+      background: #f5f7fb;
+      border-radius: 12px;
+      border: 2px dashed #d9e0eb;
+    }
+
+    .photo-section .title {
+      margin-bottom: 12px;
+    }
+
+    #photoInput {
+      display: none;
+    }
+
+    .photo-upload-btn {
+      width: 100%;
+      padding: 14px;
+      background: #50c878;
+      color: #fff;
+      border: none;
+      border-radius: 12px;
+      font: inherit;
+      font-weight: 700;
+      font-size: 16px;
+      cursor: pointer;
+      transition: 0.2s;
+      margin-bottom: 8px;
+    }
+
+    .photo-upload-btn:hover {
+      background: #3ba860;
+    }
+
+    .photo-upload-btn:active {
+      transform: scale(0.98);
+    }
+
+    .photo-name {
+      font-size: 13px;
+      color: #7a8496;
+      text-align: center;
+      margin: 8px 0;
+      min-height: 20px;
+    }
+
+    .photo-name.success {
+      color: #27ae60;
+      font-weight: 700;
+    }
+
+    .photo-preview {
+      width: 80px;
+      height: 80px;
+      margin: 10px auto;
+      background: white;
+      border-radius: 8px;
+      overflow: hidden;
+      display: none;
+    }
+
+    .photo-preview img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+
     .download-btn {
       width: 100%;
       padding: 14px;
@@ -137,6 +204,10 @@
       background: #2549a0;
     }
 
+    .download-btn:active {
+      transform: scale(0.98);
+    }
+
     .preview-area {
       display: grid;
       place-items: center;
@@ -152,18 +223,34 @@
       position: relative;
       overflow: hidden;
       border-radius: 12px;
-      background-image: url("card-template.png");
-      background-position: center;
-      background-size: 100% 100%;
-      background-repeat: no-repeat;
+      background: linear-gradient(135deg, #003d82 0%, #1a5f9d 100%);
       box-shadow: 0 15px 30px #1a2b4b30;
     }
 
-    /* اسم الشخص في الأعلى */
+    .card-photo {
+      position: absolute;
+      z-index: 1;
+      top: 15%;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 100px;
+      height: 100px;
+      border-radius: 50%;
+      background: rgba(255, 255, 255, 0.2);
+      border: 3px solid rgba(255, 255, 255, 0.4);
+      overflow: hidden;
+    }
+
+    .card-photo img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+
     .name {
       position: absolute;
       z-index: 2;
-      top: 64%;
+      top: 62%;
       right: 7%;
       left: 7%;
       max-width: 86%;
@@ -177,11 +264,10 @@
       text-shadow: 0 1px 4px #00192d;
     }
 
-    /* المسمى الوظيفي تحته مباشرة */
     .role {
       position: absolute;
       z-index: 2;
-      top: 75%;
+      top: 73%;
       right: 8%;
       left: 8%;
       margin: 0;
@@ -190,6 +276,138 @@
       font-size: clamp(14px, 4vw, 19px);
       font-weight: 700;
       text-shadow: 0 1px 4px #00192d;
+    }
+
+    /* Share Sheet Modal */
+    .share-modal {
+      display: none;
+      position: fixed;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      top: 0;
+      background: rgba(0, 0, 0, 0.5);
+      z-index: 1000;
+      animation: fadeIn 0.3s ease;
+    }
+
+    .share-modal.active {
+      display: flex;
+      flex-direction: column;
+      justify-content: flex-end;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; }
+      to { opacity: 1; }
+    }
+
+    .share-content {
+      background: #f5f7fb;
+      border-radius: 24px 24px 0 0;
+      padding: 20px;
+      animation: slideUp 0.3s ease;
+    }
+
+    @keyframes slideUp {
+      from {
+        transform: translateY(100%);
+      }
+      to {
+        transform: translateY(0);
+      }
+    }
+
+    .share-preview {
+      background: white;
+      border-radius: 16px;
+      padding: 15px;
+      margin-bottom: 20px;
+      text-align: center;
+    }
+
+    .share-preview img {
+      width: 100%;
+      max-width: 280px;
+      border-radius: 12px;
+      margin-bottom: 12px;
+    }
+
+    .share-preview p {
+      margin: 0;
+      color: #68738a;
+      font-size: 14px;
+    }
+
+    .share-options {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 12px;
+      margin-bottom: 20px;
+    }
+
+    .share-option {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 15px 10px;
+      background: white;
+      border-radius: 16px;
+      border: none;
+      cursor: pointer;
+      transition: 0.2s;
+      font-family: "Tajawal", sans-serif;
+    }
+
+    .share-option:hover {
+      background: #e8edf5;
+      transform: scale(1.05);
+    }
+
+    .share-option:active {
+      transform: scale(0.95);
+    }
+
+    .share-icon {
+      font-size: 32px;
+      margin-bottom: 8px;
+    }
+
+    .share-label {
+      font-size: 12px;
+      color: #182033;
+      font-weight: 700;
+      text-align: center;
+    }
+
+    .share-close {
+      width: 100%;
+      padding: 14px;
+      background: white;
+      border: none;
+      border-radius: 12px;
+      font: inherit;
+      font-weight: 700;
+      font-size: 16px;
+      cursor: pointer;
+      transition: 0.2s;
+      color: #68738a;
+    }
+
+    .share-close:active {
+      background: #f5f7fb;
+    }
+
+    .close-btn {
+      position: absolute;
+      top: 15px;
+      right: 15px;
+      background: none;
+      border: none;
+      font-size: 24px;
+      cursor: pointer;
+      color: #68738a;
+      z-index: 10;
     }
 
     @media (max-width: 700px) {
@@ -206,6 +424,10 @@
       .card {
         width: min(100%, 337px);
       }
+
+      .share-options {
+        grid-template-columns: repeat(2, 1fr);
+      }
     }
   </style>
 </head>
@@ -214,7 +436,7 @@
   <main class="page">
     <header>
       <h1>أنشئ بطاقة عضويتك</h1>
-      <p>اكتب الاسم واختر التصنيف لمعاينة البطاقة.</p>
+      <p>اكتب الاسم واختر التصنيف وأضف صورتك.</p>
     </header>
 
     <section class="app">
@@ -265,12 +487,31 @@
           </label>
         </div>
 
-        <!-- زر التحميل -->
-        <button class="download-btn" id="downloadBtn">تحميل البطاقة كصورة</button>
+        <div class="photo-section">
+          <label class="title" for="photoInput">📷 أضف صورتك</label>
+          <input
+            type="file"
+            id="photoInput"
+            accept="image/*"
+            capture="environment"
+          >
+          <button class="photo-upload-btn" onclick="document.getElementById('photoInput').click()">
+            📸 اختر صورة من الاستديو
+          </button>
+          <div class="photo-preview" id="photoPreview">
+            <img id="photoImage" alt="الصورة">
+          </div>
+          <div class="photo-name" id="photoName"></div>
+        </div>
+
+        <button class="download-btn" id="downloadBtn">💾 تحميل البطاقة</button>
       </div>
 
       <div class="preview-area">
         <div class="card" id="cardElement">
+          <div class="card-photo">
+            <img id="cardPhotoImage" alt="الصورة" style="display:none;">
+          </div>
           <div class="name" id="cardName">اسمك هنا</div>
           <div class="role" id="cardRole">موظف</div>
         </div>
@@ -278,61 +519,37 @@
     </section>
   </main>
 
-  <script>
-    const nameInput = document.getElementById("personName");
-    const cardName = document.getElementById("cardName");
-    const cardRole = document.getElementById("cardRole");
-    const cardElement = document.getElementById("cardElement");
-    const downloadBtn = document.getElementById("downloadBtn");
+  <!-- Share Modal -->
+  <div class="share-modal" id="shareModal">
+    <button class="close-btn" onclick="closeShareModal()">✕</button>
+    
+    <div class="share-content">
+      <div class="share-preview">
+        <img id="shareImage" alt="البطاقة">
+        <p>بطاقة العضوية الخاصة بك</p>
+      </div>
 
-    function updateCard() {
-      const selectedRole = document.querySelector(
-        'input[name="role"]:checked'
-      ).value;
+      <div class="share-options">
+        <button class="share-option" onclick="shareWhatsApp()">
+          <span class="share-icon">💬</span>
+          <span class="share-label">واتساب</span>
+        </button>
 
-      cardName.textContent = nameInput.value.trim() || "اسمك هنا";
-      cardRole.textContent = selectedRole;
-    }
+        <button class="share-option" onclick="shareTwitter()">
+          <span class="share-icon">𝕏</span>
+          <span class="share-label">تويتر</span>
+        </button>
 
-    // التحديث الفوري عند الكتابة أو تغيير الخيارات
-    nameInput.addEventListener("input", updateCard);
-    nameInput.addEventListener("keyup", updateCard);
+        <button class="share-option" onclick="shareEmail()">
+          <span class="share-icon">✉️</span>
+          <span class="share-label">بريد</span>
+        </button>
 
-    document.querySelectorAll('input[name="role"]').forEach((input) => {
-      input.addEventListener("change", updateCard);
-    });
+        <button class="share-option" onclick="shareFacebook()">
+          <span class="share-icon">👍</span>
+          <span class="share-label">فيسبوك</span>
+        </button>
 
-    // معالجة زر التحميل المتوافقة مع سفاري (ايفون)
-    downloadBtn.addEventListener("click", () => {
-      html2canvas(cardElement, { scale: 3, useCORS: true }).then((canvas) => {
-        const imageURL = canvas.toDataURL("image/png");
-        const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent);
-        
-        if (isIOS) {
-          // للآيفون: تفتح الصورة في صفحة جديدة ليتم حفظها بالضغط المطول (إضافة إلى الصور)
-          const newWindow = window.open();
-          if (newWindow) {
-            newWindow.document.write(`
-              <div style="text-align:center; font-family:Tajawal; padding:20px;">
-                <p style="font-size:18px; color:#333; margin-bottom:15px;">اضغط مطولاً على الصورة ثم اختر <b>"إضافة إلى الصور"</b> (Add to Photos)</p>
-                <img src="${imageURL}" style="width:100%; max-width:350px; display:block; margin:auto; border-radius:12px; box-shadow:0 10px 25px rgba(0,0,0,0.2);" />
-              </div>
-            `);
-          } else {
-            triggerDownload(imageURL);
-          }
-        } else {
-          triggerDownload(imageURL);
-        }
-      });
-    });
-
-    function triggerDownload(url) {
-      const link = document.createElement("a");
-      link.download = "membership-card.png";
-      link.href = url;
-      link.click();
-    }
-  </script>
-</body>
-</html>
+        <button class="share-option" onclick="copyImage()">
+          <span class="share-icon">📋</span>
+          <span class="share-
