@@ -118,28 +118,24 @@
 
     .buttons {
       display: flex;
+      flex-direction: column;
       gap: 10px;
-      flex-wrap: wrap;
     }
 
     button {
       border: 0;
       border-radius: 12px;
-      padding: 13px 19px;
+      padding: 14px 19px;
       font: inherit;
       font-weight: 700;
-      font-size: 16px;
+      font-size: 17px;
       cursor: pointer;
+      width: 100%;
     }
 
     .primary {
       color: #fff;
       background: #315fc5;
-    }
-
-    .secondary {
-      color: #315fc5;
-      background: #eef3ff;
     }
 
     button:hover {
@@ -175,24 +171,10 @@
       display: none;
     }
 
-    .role {
-      position: absolute;
-      z-index: 1;
-      top: 65%;
-      right: 8%;
-      left: 8%;
-      margin: 0;
-      color: #d9b36c;
-      text-align: center;
-      font-size: clamp(14px, 4vw, 19px);
-      font-weight: 700;
-      text-shadow: 0 1px 4px #00192d;
-    }
-
     .name {
       position: absolute;
       z-index: 1;
-      top: 71%;
+      top: 65%;
       right: 7%;
       left: 7%;
       max-width: 86%;
@@ -203,6 +185,20 @@
       font-size: clamp(17px, 5vw, 25px);
       line-height: 1.4;
       font-weight: 800;
+      text-shadow: 0 1px 4px #00192d;
+    }
+
+    .role {
+      position: absolute;
+      z-index: 1;
+      top: 77%;
+      right: 8%;
+      left: 8%;
+      margin: 0;
+      color: #d9b36c;
+      text-align: center;
+      font-size: clamp(14px, 4vw, 19px);
+      font-weight: 700;
       text-shadow: 0 1px 4px #00192d;
     }
 
@@ -284,11 +280,7 @@
         </div>
 
         <div class="buttons">
-          <button class="primary" id="generate" type="button">
-            إنشاء البطاقة
-          </button>
-
-          <button class="secondary" id="download" type="button">
+          <button class="primary" id="download" type="button">
             تحميل ومشاركة البطاقة PNG
           </button>
         </div>
@@ -296,8 +288,8 @@
 
       <div class="preview-area">
         <div class="card" id="card">
-          <div class="role" id="cardRole">موظف</div>
           <div class="name" id="cardName">اسمك هنا</div>
+          <div class="role" id="cardRole">موظف</div>
         </div>
       </div>
     </section>
@@ -325,14 +317,6 @@
       input.addEventListener("change", updateCard);
     });
 
-    document.getElementById("generate").addEventListener("click", () => {
-      updateCard();
-
-      if (!nameInput.value.trim()) {
-        nameInput.focus();
-      }
-    });
-
     nameInput.addEventListener("keydown", (event) => {
       if (event.key === "Enter") {
         event.preventDefault();
@@ -345,7 +329,6 @@
       downloadBtn.disabled = false;
     }
 
-    // زر التحميل والمشاركة الدمج النهائي
     downloadBtn.addEventListener("click", async () => {
       if (typeof html2canvas === "undefined") {
         alert("تعذر تحميل أداة إنشاء الصورة. تأكد من اتصالك بالإنترنت ثم أعد المحاولة.");
@@ -371,7 +354,6 @@
           
           const file = new File([blob], fileName, { type: "image/png" });
 
-          // محاولة فتح نافذة المشاركة المباشرة (مثل النظام لديك في الايفون والأندرويد)
           if (navigator.canShare && navigator.canShare({ files: [file] })) {
             try {
               await navigator.share({
@@ -385,7 +367,6 @@
               resetDownloadButton();
             }
           } else {
-            // الطريقة البديلة في حال عدم دعم المتصفح للمشاركة المباشرة
             const link = document.createElement("a");
             link.download = fileName;
             link.href = URL.createObjectURL(blob);
@@ -403,6 +384,3 @@
   </script>
 </body>
 </html>
-        <button class="share-option" onclick="copyImage()">
-          <span class="share-icon">📋</span>
-          <span class="share-
