@@ -1,0 +1,338 @@
+<!doctype html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>بطاقة عضوية</title>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;800&display=swap" rel="stylesheet">
+  
+  <!-- مكتبة html2canvas لتحويل البطاقة إلى صورة -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+
+  <style>
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      min-height: 100vh;
+      font-family: "Tajawal", sans-serif;
+      color: #182033;
+      background: linear-gradient(145deg, #f2f6ff, #fff 55%, #effaf7);
+    }
+
+    .page {
+      width: min(100% - 32px, 960px);
+      margin: 0 auto;
+      padding: 48px 0;
+    }
+
+    header {
+      text-align: center;
+      margin-bottom: 32px;
+    }
+
+    header h1 {
+      margin: 0 0 10px;
+      font-size: clamp(28px, 5vw, 42px);
+    }
+
+    header p {
+      margin: 0;
+      color: #68738a;
+      font-size: 17px;
+    }
+
+    .app {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 28px;
+      align-items: center;
+      background: #fff;
+      border: 1px solid #e8edf5;
+      border-radius: 24px;
+      padding: 28px;
+      box-shadow: 0 18px 55px #253b6012;
+    }
+
+    .title {
+      display: block;
+      margin-bottom: 10px;
+      font-weight: 700;
+    }
+
+    input[type="text"] {
+      width: 100%;
+      padding: 14px 15px;
+      border: 1px solid #d9e0eb;
+      border-radius: 12px;
+      font: inherit;
+      font-size: 17px;
+      outline: none;
+    }
+
+    input[type="text"]:focus {
+      border-color: #4778df;
+      box-shadow: 0 0 0 3px #4778df20;
+    }
+
+    .hint {
+      margin: 8px 0 22px;
+      color: #7a8496;
+      font-size: 14px;
+    }
+
+    .choices {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 9px;
+      margin-bottom: 22px;
+    }
+
+    .choice {
+      position: relative;
+    }
+
+    .choice input {
+      position: absolute;
+      opacity: 0;
+    }
+
+    .choice span {
+      display: block;
+      padding: 11px 8px;
+      text-align: center;
+      border: 1px solid #dfe5ee;
+      border-radius: 11px;
+      cursor: pointer;
+      transition: 0.2s;
+    }
+
+    .choice input:checked + span {
+      color: #315fc5;
+      background: #eef3ff;
+      border-color: #7698e6;
+      font-weight: 700;
+    }
+
+    .download-btn {
+      width: 100%;
+      padding: 14px;
+      background: #315fc5;
+      color: #fff;
+      border: none;
+      border-radius: 12px;
+      font: inherit;
+      font-weight: 700;
+      font-size: 17px;
+      cursor: pointer;
+      transition: 0.2s;
+      margin-top: 15px;
+    }
+
+    .download-btn:hover {
+      background: #2549a0;
+    }
+
+    .preview-area {
+      display: grid;
+      place-items: center;
+      padding: 14px;
+      background: #f5f7fb;
+      border-radius: 18px;
+    }
+
+    .card {
+      width: 100%;
+      max-width: 337px;
+      aspect-ratio: 337 / 509;
+      position: relative;
+      overflow: hidden;
+      border-radius: 12px;
+      background-image: url("card-template.png");
+      background-position: center;
+      background-size: 100% 100%;
+      background-repeat: no-repeat;
+      box-shadow: 0 15px 30px #1a2b4b30;
+    }
+
+    /* اسم الشخص في الأعلى */
+    .name {
+      position: absolute;
+      z-index: 2;
+      top: 64%;
+      right: 7%;
+      left: 7%;
+      max-width: 86%;
+      margin: auto;
+      color: #fff;
+      text-align: center;
+      overflow-wrap: anywhere;
+      font-size: clamp(17px, 5vw, 25px);
+      line-height: 1.4;
+      font-weight: 800;
+      text-shadow: 0 1px 4px #00192d;
+    }
+
+    /* المسمى الوظيفي تحته مباشرة */
+    .role {
+      position: absolute;
+      z-index: 2;
+      top: 75%;
+      right: 8%;
+      left: 8%;
+      margin: 0;
+      color: #d9b36c;
+      text-align: center;
+      font-size: clamp(14px, 4vw, 19px);
+      font-weight: 700;
+      text-shadow: 0 1px 4px #00192d;
+    }
+
+    @media (max-width: 700px) {
+      .page {
+        padding: 30px 0;
+      }
+
+      .app {
+        grid-template-columns: 1fr;
+        padding: 18px;
+        gap: 22px;
+      }
+
+      .card {
+        width: min(100%, 337px);
+      }
+    }
+  </style>
+</head>
+
+<body>
+  <main class="page">
+    <header>
+      <h1>أنشئ بطاقة عضويتك</h1>
+      <p>اكتب الاسم واختر التصنيف لمعاينة البطاقة.</p>
+    </header>
+
+    <section class="app">
+      <div class="controls">
+        <label class="title" for="personName">الاسم أو المسمى</label>
+
+        <input
+          id="personName"
+          type="text"
+          maxlength="60"
+          placeholder="مثال: نورة أحمد العتيبي"
+          autocomplete="name"
+        >
+
+        <p class="hint">تتحدث معاينة البطاقة تلقائياً أثناء الكتابة.</p>
+
+        <div class="title">اختر التصنيف</div>
+
+        <div class="choices">
+          <label class="choice">
+            <input type="radio" name="role" value="موظف" checked>
+            <span>موظف</span>
+          </label>
+
+          <label class="choice">
+            <input type="radio" name="role" value="موظفة">
+            <span>موظفة</span>
+          </label>
+
+          <label class="choice">
+            <input type="radio" name="role" value="معلم">
+            <span>معلم</span>
+          </label>
+
+          <label class="choice">
+            <input type="radio" name="role" value="معلمة">
+            <span>معلمة</span>
+          </label>
+
+          <label class="choice">
+            <input type="radio" name="role" value="طالب">
+            <span>طالب</span>
+          </label>
+
+          <label class="choice">
+            <input type="radio" name="role" value="طالبة">
+            <span>طالبة</span>
+          </label>
+        </div>
+
+        <!-- زر التحميل -->
+        <button class="download-btn" id="downloadBtn">تحميل البطاقة كصورة</button>
+      </div>
+
+      <div class="preview-area">
+        <div class="card" id="cardElement">
+          <div class="name" id="cardName">اسمك هنا</div>
+          <div class="role" id="cardRole">موظف</div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <script>
+    const nameInput = document.getElementById("personName");
+    const cardName = document.getElementById("cardName");
+    const cardRole = document.getElementById("cardRole");
+    const cardElement = document.getElementById("cardElement");
+    const downloadBtn = document.getElementById("downloadBtn");
+
+    function updateCard() {
+      const selectedRole = document.querySelector(
+        'input[name="role"]:checked'
+      ).value;
+
+      cardName.textContent = nameInput.value.trim() || "اسمك هنا";
+      cardRole.textContent = selectedRole;
+    }
+
+    // التحديث الفوري عند الكتابة أو تغيير الخيارات
+    nameInput.addEventListener("input", updateCard);
+    nameInput.addEventListener("keyup", updateCard);
+
+    document.querySelectorAll('input[name="role"]').forEach((input) => {
+      input.addEventListener("change", updateCard);
+    });
+
+    // معالجة زر التحميل المتوافقة مع سفاري (ايفون)
+    downloadBtn.addEventListener("click", () => {
+      html2canvas(cardElement, { scale: 3, useCORS: true }).then((canvas) => {
+        const imageURL = canvas.toDataURL("image/png");
+        const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent);
+        
+        if (isIOS) {
+          // للآيفون: تفتح الصورة في صفحة جديدة ليتم حفظها بالضغط المطول (إضافة إلى الصور)
+          const newWindow = window.open();
+          if (newWindow) {
+            newWindow.document.write(`
+              <div style="text-align:center; font-family:Tajawal; padding:20px;">
+                <p style="font-size:18px; color:#333; margin-bottom:15px;">اضغط مطولاً على الصورة ثم اختر <b>"إضافة إلى الصور"</b> (Add to Photos)</p>
+                <img src="${imageURL}" style="width:100%; max-width:350px; display:block; margin:auto; border-radius:12px; box-shadow:0 10px 25px rgba(0,0,0,0.2);" />
+              </div>
+            `);
+          } else {
+            triggerDownload(imageURL);
+          }
+        } else {
+          triggerDownload(imageURL);
+        }
+      });
+    });
+
+    function triggerDownload(url) {
+      const link = document.createElement("a");
+      link.download = "membership-card.png";
+      link.href = url;
+      link.click();
+    }
+  </script>
+</body>
+</html>
