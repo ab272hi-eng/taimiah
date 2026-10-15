@@ -1,14 +1,12 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="ar" dir="rtl">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>بطاقة عضوية</title>
+  <title>إنشاء بطاقة عضوية</title>
 
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;800&display=swap" rel="stylesheet">
-  
-  <!-- مكتبة html2canvas لتحويل البطاقة إلى صورة -->
   <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
 
   <style>
@@ -118,99 +116,38 @@
       font-weight: 700;
     }
 
-    /* قسم تحميل الصورة */
-    .photo-section {
-      margin: 22px 0;
-      padding: 15px;
-      background: #f5f7fb;
+    .buttons {
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+
+    button {
+      border: 0;
       border-radius: 12px;
-      border: 2px dashed #d9e0eb;
-    }
-
-    .photo-section .title {
-      margin-bottom: 12px;
-    }
-
-    #photoInput {
-      display: none;
-    }
-
-    .photo-upload-btn {
-      width: 100%;
-      padding: 14px;
-      background: #50c878;
-      color: #fff;
-      border: none;
-      border-radius: 12px;
+      padding: 13px 19px;
       font: inherit;
       font-weight: 700;
       font-size: 16px;
       cursor: pointer;
-      transition: 0.2s;
-      margin-bottom: 8px;
     }
 
-    .photo-upload-btn:hover {
-      background: #3ba860;
-    }
-
-    .photo-upload-btn:active {
-      transform: scale(0.98);
-    }
-
-    .photo-name {
-      font-size: 13px;
-      color: #7a8496;
-      text-align: center;
-      margin: 8px 0;
-      min-height: 20px;
-    }
-
-    .photo-name.success {
-      color: #27ae60;
-      font-weight: 700;
-    }
-
-    .photo-preview {
-      width: 80px;
-      height: 80px;
-      margin: 10px auto;
-      background: white;
-      border-radius: 8px;
-      overflow: hidden;
-      display: none;
-    }
-
-    .photo-preview img {
-      width: 100%;
-      height: 100%;
-      object-fit: cover;
-    }
-
-    .download-btn {
-      width: 100%;
-      padding: 14px;
-      background: #315fc5;
+    .primary {
       color: #fff;
-      border: none;
-      border-radius: 12px;
-      font: inherit;
-      font-weight: 700;
-      font-size: 17px;
-      cursor: pointer;
-      transition: 0.2s;
-      margin-top: 15px;
+      background: #315fc5;
     }
 
-    .download-btn:hover {
-      background: #2549a0;
+    .secondary {
+      color: #315fc5;
+      background: #eef3ff;
     }
 
-    .download-btn:active {
-      transform: scale(0.98);
+    button:hover {
+      filter: brightness(0.96);
     }
 
     .preview-area {
+      min-height: 0;
       display: grid;
       place-items: center;
       padding: 14px;
@@ -218,6 +155,7 @@
       border-radius: 18px;
     }
 
+    /* قالب البطاقة هو الصورة card-template.png */
     .card {
       width: 100%;
       max-width: 337px;
@@ -225,36 +163,36 @@
       position: relative;
       overflow: hidden;
       border-radius: 12px;
-      background: linear-gradient(135deg, #003d82 0%, #1a5f9d 100%);
+      background-image: url("card-template.png");
+      background-position: center;
+      background-size: 100% 100%;
+      background-repeat: no-repeat;
       box-shadow: 0 15px 30px #1a2b4b30;
     }
 
-    /* صورة الشخص - دائرية */
-    .card-photo {
+    .brand,
+    .card-footer {
+      display: none;
+    }
+
+    .role {
       position: absolute;
       z-index: 1;
-      top: 15%;
-      left: 50%;
-      transform: translateX(-50%);
-      width: 100px;
-      height: 100px;
-      border-radius: 50%;
-      background: rgba(255, 255, 255, 0.2);
-      border: 3px solid rgba(255, 255, 255, 0.4);
-      overflow: hidden;
+      top: 65%;
+      right: 8%;
+      left: 8%;
+      margin: 0;
+      color: #d9b36c;
+      text-align: center;
+      font-size: clamp(14px, 4vw, 19px);
+      font-weight: 700;
+      text-shadow: 0 1px 4px #00192d;
     }
 
-    .card-photo img {
-      width: 100%;
-      height: 100%;
-      object-fit: cover;
-    }
-
-    /* اسم الشخص في الأعلى */
     .name {
       position: absolute;
-      z-index: 2;
-      top: 62%;
+      z-index: 1;
+      top: 71%;
       right: 7%;
       left: 7%;
       max-width: 86%;
@@ -265,21 +203,6 @@
       font-size: clamp(17px, 5vw, 25px);
       line-height: 1.4;
       font-weight: 800;
-      text-shadow: 0 1px 4px #00192d;
-    }
-
-    /* المسمى الوظيفي تحته مباشرة */
-    .role {
-      position: absolute;
-      z-index: 2;
-      top: 73%;
-      right: 8%;
-      left: 8%;
-      margin: 0;
-      color: #d9b36c;
-      text-align: center;
-      font-size: clamp(14px, 4vw, 19px);
-      font-weight: 700;
       text-shadow: 0 1px 4px #00192d;
     }
 
@@ -294,6 +217,10 @@
         gap: 22px;
       }
 
+      .preview-area {
+        padding: 12px;
+      }
+
       .card {
         width: min(100%, 337px);
       }
@@ -305,7 +232,7 @@
   <main class="page">
     <header>
       <h1>أنشئ بطاقة عضويتك</h1>
-      <p>اكتب الاسم واختر التصنيف وأضف صورتك.</p>
+      <p>اكتب الاسم واختر التصنيف، ثم حمّل البطاقة بصيغة PNG.</p>
     </header>
 
     <section class="app">
@@ -356,35 +283,21 @@
           </label>
         </div>
 
-        <!-- قسم تحميل الصورة -->
-        <div class="photo-section">
-          <label class="title" for="photoInput">📷 أضف صورتك</label>
-          <input
-            type="file"
-            id="photoInput"
-            accept="image/*"
-            capture="environment"
-          >
-          <button class="photo-upload-btn" onclick="document.getElementById('photoInput').click()">
-            📸 اختر صورة من الاستديو
+        <div class="buttons">
+          <button class="primary" id="generate" type="button">
+            إنشاء البطاقة
           </button>
-          <div class="photo-preview" id="photoPreview">
-            <img id="photoImage" alt="الصورة">
-          </div>
-          <div class="photo-name" id="photoName"></div>
-        </div>
 
-        <!-- زر التحميل والمشاركة -->
-        <button class="download-btn" id="downloadBtn">💾 تحميل ومشاركة البطاقة</button>
+          <button class="secondary" id="download" type="button">
+            تحميل ومشاركة البطاقة PNG
+          </button>
+        </div>
       </div>
 
       <div class="preview-area">
-        <div class="card" id="cardElement">
-          <div class="card-photo">
-            <img id="cardPhotoImage" alt="الصورة" style="display:none;">
-          </div>
-          <div class="name" id="cardName">اسمك هنا</div>
+        <div class="card" id="card">
           <div class="role" id="cardRole">موظف</div>
+          <div class="name" id="cardName">اسمك هنا</div>
         </div>
       </div>
     </section>
@@ -394,13 +307,8 @@
     const nameInput = document.getElementById("personName");
     const cardName = document.getElementById("cardName");
     const cardRole = document.getElementById("cardRole");
-    const cardElement = document.getElementById("cardElement");
-    const downloadBtn = document.getElementById("downloadBtn");
-    const photoInput = document.getElementById("photoInput");
-    const photoPreview = document.getElementById("photoPreview");
-    const photoImage = document.getElementById("photoImage");
-    const cardPhotoImage = document.getElementById("cardPhotoImage");
-    const photoName = document.getElementById("photoName");
+    const card = document.getElementById("card");
+    const downloadBtn = document.getElementById("download");
 
     function updateCard() {
       const selectedRole = document.querySelector(
@@ -411,90 +319,87 @@
       cardRole.textContent = selectedRole;
     }
 
-    // معالجة تحميل الصورة
-    photoInput.addEventListener("change", function(e) {
-      const file = e.target.files[0];
-      
-      if (file) {
-        if (!file.type.startsWith('image/')) {
-          photoName.textContent = '❌ الرجاء اختيار ملف صورة صحيح';
-          photoName.classList.remove('success');
-          return;
-        }
-
-        if (file.size > 5 * 1024 * 1024) {
-          photoName.textContent = '❌ حجم الصورة كبير جداً (أقصى حد 5 ميجابايت)';
-          photoName.classList.remove('success');
-          return;
-        }
-
-        const reader = new FileReader();
-        reader.onload = function(event) {
-          const imageData = event.target.result;
-          
-          photoImage.src = imageData;
-          photoPreview.style.display = 'block';
-          
-          cardPhotoImage.src = imageData;
-          cardPhotoImage.style.display = 'block';
-          
-          photoName.textContent = `✓ تم تحميل: ${file.name}`;
-          photoName.classList.add('success');
-        };
-
-        reader.readAsDataURL(file);
-      }
-    });
-
     nameInput.addEventListener("input", updateCard);
-    nameInput.addEventListener("keyup", updateCard);
 
     document.querySelectorAll('input[name="role"]').forEach((input) => {
       input.addEventListener("change", updateCard);
     });
 
-    // معالجة زر التحميل وفتح نافذة المشاركة المباشرة
-    downloadBtn.addEventListener("click", () => {
-      downloadBtn.textContent = "جاري التجهيز...";
-      downloadBtn.disabled = true;
+    document.getElementById("generate").addEventListener("click", () => {
+      updateCard();
 
-      html2canvas(cardElement, { scale: 3, useCORS: true }).then((canvas) => {
-        canvas.toBlob((blob) => {
-          const fileName = `بطاقة-${cardName.textContent.trim() || 'عضوية'}.png`;
+      if (!nameInput.value.trim()) {
+        nameInput.focus();
+      }
+    });
+
+    nameInput.addEventListener("keydown", (event) => {
+      if (event.key === "Enter") {
+        event.preventDefault();
+        updateCard();
+      }
+    });
+
+    function resetDownloadButton() {
+      downloadBtn.textContent = "تحميل ومشاركة البطاقة PNG";
+      downloadBtn.disabled = false;
+    }
+
+    // زر التحميل والمشاركة الدمج النهائي
+    downloadBtn.addEventListener("click", async () => {
+      if (typeof html2canvas === "undefined") {
+        alert("تعذر تحميل أداة إنشاء الصورة. تأكد من اتصالك بالإنترنت ثم أعد المحاولة.");
+        return;
+      }
+
+      try {
+        updateCard();
+        await document.fonts.ready;
+
+        downloadBtn.textContent = "جاري التجهيز...";
+        downloadBtn.disabled = true;
+
+        const canvas = await html2canvas(card, {
+          scale: 3,
+          backgroundColor: null,
+          useCORS: true
+        });
+
+        canvas.toBlob(async (blob) => {
+          const fileName = (nameInput.value.trim() || "بطاقة-عضوية")
+            .replace(/[\\/:*?"<>|]/g, "-") + ".png";
+          
           const file = new File([blob], fileName, { type: "image/png" });
 
-          // التحقق من دعم المتصفح لميزة المشاركة (متوفرة في هواتف آيفون وأندرويد الحديثة)
+          // محاولة فتح نافذة المشاركة المباشرة (مثل النظام لديك في الايفون والأندرويد)
           if (navigator.canShare && navigator.canShare({ files: [file] })) {
-            navigator.share({
-              files: [file],
-              title: 'بطاقة العضوية',
-              text: 'إليك بطاقة العضوية الخاصة بك'
-            }).then(() => {
-              resetButton();
-            }).catch((error) => {
+            try {
+              await navigator.share({
+                files: [file],
+                title: 'بطاقة العضوية',
+                text: 'إليك بطاقة العضوية الخاصة بك'
+              });
+              resetDownloadButton();
+            } catch (error) {
               console.log("تم إلغاء المشاركة", error);
-              resetButton();
-            });
+              resetDownloadButton();
+            }
           } else {
-            // طريقة بديلة للتحميل المباشر إذا لم تكن الميزة مدعومة
+            // الطريقة البديلة في حال عدم دعم المتصفح للمشاركة المباشرة
             const link = document.createElement("a");
             link.download = fileName;
             link.href = URL.createObjectURL(blob);
             link.click();
-            resetButton();
+            resetDownloadButton();
           }
         }, "image/png");
-      }).catch((err) => {
-        console.error("حدث خطأ:", err);
-        alert("حدث خطأ أثناء معالجة الصورة، يرجى المحاولة مرة أخرى.");
-        resetButton();
-      });
-    });
 
-    function resetButton() {
-      downloadBtn.textContent = "💾 تحميل ومشاركة البطاقة";
-      downloadBtn.disabled = false;
-    }
+      } catch (error) {
+        alert("حدث خطأ أثناء إنشاء البطاقة. تأكد أن صورة القالب موجودة بجانب ملف الصفحة.");
+        console.error(error);
+        resetDownloadButton();
+      }
+    });
   </script>
 </body>
 </html>
